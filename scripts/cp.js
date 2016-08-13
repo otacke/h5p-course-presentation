@@ -73,6 +73,15 @@ H5P.CoursePresentation = function (params, id, extras) {
     this.enablePrintButton = !!params.override.enablePrintButton;
   }
 
+  // Settings for automatic presentation
+  if (!!params.autoPresent) {
+    this.playAutomatically = !!params.autoPresent.playAutomatically;
+    this.loopPresentation = !!params.autoPresent.loopPresentation;
+    if (!!params.autoPresent.slideDisplayTimeSeconds) {
+      this.slideDisplayTimeSeconds = params.autoPresent.slideDisplayTimeSeconds;
+    }
+  }
+
   // Set override for all actions
   this.setElementsOverride(params.override);
 
@@ -344,6 +353,42 @@ H5P.CoursePresentation.prototype.attach = function ($container) {
 
   if (this.previousState && this.previousState.progress) {
     this.jumpToSlide(this.previousState.progress);
+  }
+
+  /*
+   * Update the slides if time is set
+   * @param {Boolean} stop true to stop the updates
+   */
+  var update = function(stop) {
+    if (stop) {
+      // stop the timer
+      clearTimeout(interval);
+    } else {
+      interval = setTimeout(function() {
+        slideTo = that.$current.index();
+        
+        // go to next slide until final slide is reached
+        if ((slideTo + 1) < that.slides.length) {
+          slideTo++;
+        } else {
+          // loop indefinitely or stop playing
+          if (that.loopPresentation) {
+            slideTo = 0;
+          } else {
+            stop = true;
+          }
+        }
+
+        if (!stop) {
+          that.jumpToSlide(slideTo);
+        }
+        update(stop);
+      }, that.slideDisplayTimeSeconds * 1000);
+    }
+  }
+
+  if (that.playAutomatically && !that.editor) {
+    update();
   }
 };
 

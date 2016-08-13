@@ -576,5 +576,35 @@
         "default": false
       }
     ]
+  },
+  {
+    "name": "autoPresent",
+    "type": "group",
+    "label": "Automatic Presentation",
+    "description": "Settings for automatic presentation",
+    "fields": [
+      {
+        "name": "playAutomatically",
+        "type": "boolean",
+        "label": "Play the presentation automatically",
+        "description": "If enabled, the presentation will advance automatically from slide to slide",
+        "default": false
+      },
+      {
+        "name": "slideDisplayTimeSeconds",
+        "type": "number",
+        "label": "Display time for each slide",
+        "description": "Number of seconds after which the next slide is shown automatically",
+        "default": 20,
+        "min": 1
+      },
+      {
+        "name": "loopPresentation",
+        "type": "boolean",
+        "label": "Loop the presentation indefinitely",
+        "description": "If the presentation runs automatically, it will jump to slide 1 after reaching the last slide.",
+        "default": false
+      }
+    ]
   }
 ]
