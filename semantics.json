@@ -16,7 +16,6 @@
               "type": "number",
               "label": "Display duration",
               "description": "Number of seconds after which the next slide is shown automatically (0 = indefinitely)",
-              "default": 0,
               "min": 0
             },
             {
