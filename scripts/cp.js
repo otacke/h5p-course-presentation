@@ -75,7 +75,9 @@ H5P.CoursePresentation = function (params, id, extras) {
 
   // Settings for automatic presentation
   if (!!params.autoPresent) {
-    this.playAutomatically = !!params.autoPresent.playAutomatically;
+    if (!!params.autoPresent.presentationMode) {
+      this.presentationMode = params.autoPresent.presentationMode;
+    }
     this.loopPresentation = !!params.autoPresent.loopPresentation;
     if (!!params.autoPresent.slideDisplayTimeSeconds) {
       this.slideDisplayTimeSeconds = params.autoPresent.slideDisplayTimeSeconds;
@@ -355,41 +357,8 @@ H5P.CoursePresentation.prototype.attach = function ($container) {
     this.jumpToSlide(this.previousState.progress);
   }
 
-  /*
-   * Update the slides if time is set
-   * @param {Boolean} stop true to stop the updates
-   */
-  var update = function(stop) {
-    if (stop) {
-      // stop the timer
-      clearTimeout(interval);
-    } else {
-      interval = setTimeout(function() {
-        slideTo = that.$current.index();
-        
-        // go to next slide until final slide is reached
-        if ((slideTo + 1) < that.slides.length) {
-          slideTo++;
-        } else {
-          // loop indefinitely or stop playing
-          if (that.loopPresentation) {
-            slideTo = 0;
-          } else {
-            stop = true;
-          }
-        }
-
-        if (!stop) {
-          that.jumpToSlide(slideTo);
-        }
-        update(stop);
-      }, that.slideDisplayTimeSeconds * 1000);
-    }
-  }
-
-  if (that.playAutomatically && !that.editor) {
-    update();
-  }
+  // Jump to next slide automatically if set accordingly
+  that.autoJump();
 };
 
 /**
@@ -1504,6 +1473,10 @@ H5P.CoursePresentation.prototype.jumpToSlide = function (slideNumber, noScroll) 
 
   this.trigger('resize'); // Triggered to resize elements.
   this.fitCT();
+ 
+  // Jump to next slide?
+  that.autoJump();
+  
   return true;
 };
 
@@ -1735,3 +1708,54 @@ H5P.CoursePresentation.prototype.pauseMedia = function (instance) {
     H5P.error(err);
   }
 };
+
+/*
+ * Jump to next slide if duration time is set
+ * TODO: stop timer when moved to different slide manually
+ * TODO: implement editing capability in h5p-editor-course-presentation
+ */
+H5P.CoursePresentation.prototype.autoJump = function () {
+  that = this;
+
+  if (!this.editor && this.presentationMode !== "none") {
+
+    // value might not be set in older h5p file versions
+    if (!this.slides[that.$current.index()].durationSeconds) {
+        slideDuration = 0;
+    } else {
+        slideDuration = this.slides[that.$current.index()].durationSeconds;
+    }
+
+    switch (this.presentationMode) {
+      case "slideSettings":
+          // implicitly loaded above
+        break;
+      case "globalSettings":
+        slideDuration = this.slideDisplayTimeSeconds;
+        break;
+      case "globalSettingsFallback":
+        if (slideDuration === 0) {
+          slideDuration = this.slideDisplayTimeSeconds;
+        }
+        break;
+      default:
+        slideDuration = 0;
+    }
+
+    if (slideDuration > 0) {
+      setTimeout(function() {
+        slideTo = that.$current.index();
+
+        // go to next slide until final slide is reached
+        if ((slideTo + 1) < that.slides.length) {
+          that.jumpToSlide(slideTo + 1);
+        } else {
+          // loop indefinitely or stop playing
+          if (that.loopPresentation) {
+            that.jumpToSlide(0);
+          }
+        }
+      }, slideDuration * 1000);
+    }
+  }
+}

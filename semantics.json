@@ -12,6 +12,14 @@
           "type": "group",
           "fields": [
             {
+              "name": "durationSeconds",
+              "type": "number",
+              "label": "Display duration",
+              "description": "Number of seconds after which the next slide is shown automatically (0 = indefinitely)",
+              "default": 0,
+              "min": 0
+            },
+            {
               "name": "elements",
               "type": "list",
               "field": {
@@ -584,16 +592,34 @@
     "description": "Settings for automatic presentation",
     "fields": [
       {
-        "name": "playAutomatically",
-        "type": "boolean",
-        "label": "Play the presentation automatically",
-        "description": "If enabled, the presentation will advance automatically from slide to slide",
-        "default": false
+        "name": "presentationMode",
+        "type": "select",
+        "label": "Auto presentation mode",
+        "description": "If set, this option determines where to look first for determining how long to show each slide",
+        "default": "none",
+        "options": [
+          {
+            "value": "none",
+            "label": "no automatic presentation"
+          },
+          {
+            "value": "slideSettings",
+            "label": "use slide settings"
+          },
+          {
+            "value": "globalSettings",
+            "label": "use global settings"
+          },
+          {
+            "value": "globalSettingsFallback",
+            "label": "use global settings if there are no slide settings"
+          }
+        ]
       },
       {
         "name": "slideDisplayTimeSeconds",
         "type": "number",
-        "label": "Display time for each slide",
+        "label": "Global display time for each slide",
         "description": "Number of seconds after which the next slide is shown automatically",
         "default": 20,
         "min": 1
