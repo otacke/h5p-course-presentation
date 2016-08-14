@@ -1719,25 +1719,31 @@ H5P.CoursePresentation.prototype.autoJump = function () {
 
   if (!this.editor && this.presentationMode !== "none") {
 
-    // value might not be set in older h5p file versions
-    if (!this.slides[that.$current.index()].durationSeconds) {
-        slideDuration = 0;
-    } else {
-        slideDuration = this.slides[that.$current.index()].durationSeconds;
-    }
-
     switch (this.presentationMode) {
+
+      // use individual slide settings
       case "slideSettings":
-          // implicitly loaded above
+        if (!this.slides[that.$current.index()].durationSeconds) {
+            slideDuration = -1; // might be a file from earlier version
+        } else {
+            slideDuration = this.slides[that.$current.index()].durationSeconds;
+        }
         break;
+
+      // override individual slide settings by global settings
       case "globalSettings":
         slideDuration = this.slideDisplayTimeSeconds;
         break;
+
+      // global settings only if there are no individual slide settings
       case "globalSettingsFallback":
-        if (slideDuration === 0) {
-          slideDuration = this.slideDisplayTimeSeconds;
+        if (!this.slides[that.$current.index()].durationSeconds) {
+            slideDuration = this.slideDisplayTimeSeconds;
+        } else {
+            slideDuration = this.slides[that.$current.index()].durationSeconds;
         }
         break;
+
       default:
         slideDuration = 0;
     }
