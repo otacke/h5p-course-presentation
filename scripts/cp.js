@@ -273,7 +273,8 @@ H5P.CoursePresentation.prototype.attach = function ($container) {
 
   if (this.hideSummarySlide) {
     this.showSummarySlide = !this.hideSummarySlide;
-  } else {
+  }
+  else {
     // Check for task
     this.slidesWithSolutions.forEach(function (slide) {
       that.showSummarySlide = slide.length;
@@ -380,14 +381,16 @@ H5P.CoursePresentation.prototype.setProgressBarFeedback = function (slideScores)
           that.progressbarParts[singleSlide.slide-1]
             .children('.h5p-progressbar-part-has-task')
             .addClass('h5p-is-correct');
-        } else {
+        }
+        else {
           that.progressbarParts[singleSlide.slide-1]
             .children('.h5p-progressbar-part-has-task')
             .addClass('h5p-is-wrong');
         }
       }
     });
-  } else {
+  }
+  else {
     // Remove all feedback icons.
     that.progressbarParts.forEach(function (pbPart) {
       pbPart.children('.h5p-progressbar-part-has-task').removeClass('h5p-is-correct');
@@ -538,7 +541,8 @@ H5P.CoursePresentation.prototype.toggleFullScreen = function () {
     // Cancel fullscreen
     if (H5P.exitFullScreen !== undefined && H5P.fullScreenBrowserPrefix !== undefined) {
       H5P.exitFullScreen();
-    } else {
+    }
+    else {
       // Use old system
       if (H5P.fullScreenBrowserPrefix === undefined) {
         // Click button to disable fullscreen
@@ -1257,7 +1261,8 @@ H5P.CoursePresentation.prototype.updateTouchPopup = function ($container, slideN
 
   if ((this.$keywords !== undefined) && (this.$keywords.children(':eq(' + slideNumber + ')').find('span').html() !== undefined)) {
     keyword += this.$keywords.children(':eq(' + slideNumber + ')').find('span').html();
-  } else {
+  }
+  else {
     var slideIndexToNumber = slideNumber+1;
     keyword += this.l10n.slide + ' ' + slideIndexToNumber;
   }
@@ -1273,14 +1278,16 @@ H5P.CoursePresentation.prototype.updateTouchPopup = function ($container, slideN
     this.touchPopup = H5P.jQuery('<div/>', {
       'class': 'h5p-touch-popup'
     }).insertAfter($container);
-  } else {
+  }
+  else {
     this.touchPopup.insertAfter($container);
   }
 
   // Adjust yPos above finger.
   if ((yPos - ($container.parent().height() * yPosAdjustment)) < 0) {
     yPos = 0;
-  } else {
+  }
+  else {
     yPos -= ($container.parent().height() * yPosAdjustment);
   }
 
@@ -1730,7 +1737,8 @@ H5P.CoursePresentation.prototype.autoJump = function () {
       case "slideSettings":
         if (!this.slides[that.$current.index()].durationSeconds) {
             slideDuration = -1; // might be 0 as well, but could be used later
-        } else {
+        }
+        else {
             slideDuration = this.slides[that.$current.index()].durationSeconds;
         }
         break;
@@ -1744,7 +1752,8 @@ H5P.CoursePresentation.prototype.autoJump = function () {
       case "globalSettingsFallback":
         if (!this.slides[that.$current.index()].durationSeconds) {
             slideDuration = this.slideDisplayTimeSeconds;
-        } else {
+        }
+        else {
             slideDuration = this.slides[that.$current.index()].durationSeconds;
         }
         break;
@@ -1760,7 +1769,8 @@ H5P.CoursePresentation.prototype.autoJump = function () {
         // go to next slide if not last slide already or loop
         if ((slideTo + 1) < that.slides.length) {
           that.jumpToSlide(slideTo + 1);
-        } else {
+        }
+        else {
           // loop indefinitely or stop playing
           if (that.loopPresentation) {
             that.jumpToSlide(0);            
